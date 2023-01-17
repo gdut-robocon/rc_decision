@@ -44,12 +44,13 @@ generate_messages(
 )
 
 catkin_package(
-    INCLUDE_DIRS include
+    INCLUDE_DIRS include blackboard
     LIBRARIES
     CATKIN_DEPENDS ${ROS_DEPENDENCIES}
 )
 
-include_directories( include ${catkin_INCLUDE_DIRS})
+include_directories( include 
+blackboard ${catkin_INCLUDE_DIRS})
 
 ######################################################
 # LIBRARIES

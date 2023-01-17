@@ -2,7 +2,7 @@
  * @Author: JIAlonglong
  * @Date: 2023-01-16 20:04:42
  * @LastEditors: JIAlonglong 2495477531@qq.com
- * @LastEditTime: 2023-01-17 20:31:10
+ * @LastEditTime: 2023-01-18 02:06:32
  * @FilePath: /rc_ws/src/rc_fsm/rc_decision/test/treeNode/test_bt.cpp
  * @Description: 
  * 
@@ -202,6 +202,11 @@ int main(int argc, char **argv)
   auto tree = factory.createTreeFromText(xml_text);
 
   NodeStatus status = NodeStatus::IDLE;
+
+  #ifdef ZMQ_FOUND
+    // This logger publish status changes using ZeroMQ. Used by Groot
+    PublisherZMQ publisher_zmq(tree);
+  #endif
 
   while( ros::ok() && (status == NodeStatus::IDLE || status == NodeStatus::RUNNING))
   {
