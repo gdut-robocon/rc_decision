@@ -2,8 +2,8 @@
  * @Author: JIAlonglong
  * @Date: 2023-01-16 20:04:42
  * @LastEditors: JIAlonglong 2495477531@qq.com
- * @LastEditTime: 2023-01-16 20:52:27
- * @FilePath: /rc_ws/src/rc_fsm/rc_decision/test/treeNode/test_server.cpp
+ * @LastEditTime: 2023-01-17 20:31:10
+ * @FilePath: /rc_ws/src/rc_fsm/rc_decision/test/treeNode/test_bt.cpp
  * @Description: 
  * 
  * Copyright (c) 2023 by JIAlonglong 2495477531@qq.com, All Rights Reserved. 
@@ -14,88 +14,204 @@
 #include <rc_decision/AddTwoInts.h>
 #include <rc_decision/FibonacciAction.h>
 
-//this is a simple ActionNode to print robot's value
+using namespace BT;
 
-class PrintRobot : public BT::SyncActionNode
+//-------------------------------------------------------------
+// Simple Action to print a number
+//-------------------------------------------------------------
+
+class PrintValue : public BT::SyncActionNode
 {
-private:
-    /* data */
 public:
-    PrintRobot(const std::string &name , const BT::NodeConfiguration& config):
-        BT::SyncActionNode(name,config){}
+  PrintValue(const std::string& name, const BT::NodeConfiguration& config)
+  : BT::SyncActionNode(name, config) {}
 
-    // you must override the virtual function tick()
-    BT::NodeStatus tick() override
-    {
-        int value=0;
-        if (getInput("message",value))
-        {
-            std::cout << "RBValue: " << value << std::endl;
-            return BT::NodeStatus::SUCCESS;
-        }
-        else
-        {
-            std::cout << "FAILED" << std::endl;
-            return BT::NodeStatus::FAILURE;
-        }
+  BT::NodeStatus tick() override {
+    int value = 0;
+    if( getInput("message", value ) ){
+      std::cout << "PrintValue: " << value << std::endl;
+      return NodeStatus::SUCCESS;
     }
+    else{
+      std::cout << "PrintValue FAILED "<< std::endl;
+      return NodeStatus::FAILURE;
+    }
+  }
 
-    static BT::PortsList providedPort()
-    {
-        return {BT::InputPort<int>("message")};
-    }    
+  static BT::PortsList providedPorts() {
+    return{ BT::InputPort<int>("message") };
+  }
 };
 
-// here you successfully build a ActionNode!
+//-------------------------------------------------------------
+// This client example is equal to this tutorial:
+// http://wiki.ros.org/ROS/Tutorials/WritingServiceClient%28c%2B%2B%29
+//-------------------------------------------------------------
 
-//a client Node example used in ros:
-class AddTwoIntsAction : public RosServiceNode<rc_decision::AddTwoInts>
+class AddTwoIntsAction: public RosServiceNode<rc_decision::AddTwoInts>
 {
-    public:
-    AddTwoIntsAction(ros::NodeHandle& nh, const std::string& node_name, const NodeConfiguration & conf):
-    RosServiceNode<rc_decision::AddTwoInts>(nh, node_name, conf){}
 
-    static BT::PortsList providedPorts()
+public:
+  AddTwoIntsAction( ros::NodeHandle& handle, const std::string& node_name, const NodeConfiguration & conf):
+  RosServiceNode<rc_decision::AddTwoInts>(handle, node_name, conf) {}
+
+  static PortsList providedPorts()
+  {
+    return  {
+      InputPort<int>("first_int"),
+      InputPort<int>("second_int"),
+      OutputPort<int>("sum") };
+  }
+
+  void sendRequest(RequestType& request) override
+  {
+    getInput("first_int", request.a);
+    getInput("second_int", request.b);
+    expected_result_ = request.a + request.b;
+    ROS_INFO("AddTwoInts: sending request");
+  }
+
+  NodeStatus onResponse(const ResponseType& rep) override
+  {
+    ROS_INFO("AddTwoInts: response received");
+    if( rep.sum == expected_result_)
     {
-        return{
-            InputPort<int>("first int");
-            InputPort<int>("second_int");
-            OutputPort<int>("sum");
-        }
-
+      setOutput<int>("sum", rep.sum);
+      return NodeStatus::SUCCESS;
     }
-
-    void sendRequest(RequestType& request) override
-    {
-        getInput("first_int",request.a);
-        getInput("second_int",request.b);
-        expected_result_= request.a + request.b;
-        ROS_INFO("AddTwoInts: sending request ");
+    else{
+      ROS_ERROR("AddTwoInts replied something unexpected: %d", rep.sum);
+      return NodeStatus::FAILURE;
     }
+  }
 
-    NodeStatus onResponse(const ResponseType& rep) override
-    {
-        ROS_INFO("AddTwoInts: response received");
-        if (rep.sum == expected_result_)
-        {
-            setOutput<int>("sum",rep.num);
-            return BT::NodeStatus::SUCCESS;
-        }
-        else
-        {
-            ROS_ERROR("AddTwoInts replied something unexpected: %d",rep.num);
-            return BT::NodeStatus::FAILURE;
-        }
-        
-        
-    }
-
-    virtual NodeStatus onFailedRequest(RosServiceNode::FailureCause failure)override
-    {
-        ROS_ERROR("AddTwoInts request failed %d", static_cast<int>(failure));
-        return BT::NodeStatus::FAILURE;
-    }
+  virtual NodeStatus onFailedRequest(RosServiceNode::FailureCause failure) override
+  {
+    ROS_ERROR("AddTwoInts request failed %d", static_cast<int>(failure));
+    return NodeStatus::FAILURE;
+  }
 
 private:
- int expected_result_; 
+  int expected_result_;
 };
+
+//-------------------------------------------------------------
+// This client example is equal to this tutorial:
+// http://wiki.ros.org/ROS/Tutorials/WritingServiceClient%28c%2B%2B%29
+//-------------------------------------------------------------
+
+class FibonacciServer: public RosActionNode<rc_decision::FibonacciAction>
+{
+
+public:
+  FibonacciServer( ros::NodeHandle& handle, const std::string& name, const NodeConfiguration & conf):
+RosActionNode<rc_decision::FibonacciAction>(handle, name, conf) {}
+
+  static PortsList providedPorts()
+  {
+    return  {
+      InputPort<int>("order"),
+      OutputPort<int>("result") };
+  }
+
+  bool sendGoal(GoalType& goal) override
+  {
+    if( !getInput<int>("order", goal.order) )
+    {
+      // abourt the entire action. Result in a FAILURE
+      return false;
+    }
+    expected_result_ = 0 + 1 + 1 + 2 + 3 + 5 + 8; // supposing order is 5
+    ROS_INFO("FibonacciAction: sending request");
+    return true;
+  }
+
+  NodeStatus onResult( const ResultType& res) override
+  {
+    ROS_INFO("FibonacciAction: result received");
+    int fibonacci_result = 0;
+    for( int n: res.sequence)
+    {
+      fibonacci_result += n;
+    }
+    if( fibonacci_result == expected_result_)
+    {
+      setOutput<int>("result", fibonacci_result);
+      return NodeStatus::SUCCESS;
+    }
+    else{
+      ROS_ERROR("FibonacciAction replied something unexpected: %d", fibonacci_result);
+      return NodeStatus::FAILURE;
+    }
+  }
+
+  virtual NodeStatus onFailedRequest(FailureCause failure) override
+  {
+    ROS_ERROR("FibonacciAction request failed %d", static_cast<int>(failure));
+    return NodeStatus::FAILURE;
+  }
+
+  void halt() override
+  {
+    if( status() == NodeStatus::RUNNING )
+    {
+      ROS_WARN("FibonacciAction halted");
+      BaseClass::halt();
+    }
+  }
+
+private:
+  int expected_result_;
+};
+
+//-----------------------------------------------------
+
+  // Simple tree, used to execute once each action.
+  static const char* xml_text = R"(
+ <root >
+     <BehaviorTree>
+        <Sequence>
+            <AddTwoInts service_name = "add_two_ints"
+                        first_int = "3" second_int = "4"
+                        sum = "{add_two_result}" />
+            <PrintValue message="{add_two_result}"/>
+
+            <RetryUntilSuccessful num_attempts="4">
+                <Timeout msec="300">
+                    <Fibonacci server_name="fibonacci" order="5"
+                               result="{fibonacci_result}" />
+                </Timeout>
+            </RetryUntilSuccessful>
+            <PrintValue message="{fibonacci_result}"/>
+        </Sequence>
+     </BehaviorTree>
+ </root>
+ )";
+
+int main(int argc, char **argv)
+{
+  ros::init(argc, argv, "test_behavior_tree");
+  ros::NodeHandle nh;
+
+  BehaviorTreeFactory factory;
+
+  factory.registerNodeType<PrintValue>("PrintValue");
+  RegisterRosService<AddTwoIntsAction>(factory, "AddTwoInts", nh);
+  RegisterRosAction<FibonacciServer>(factory, "Fibonacci", nh);
+
+  auto tree = factory.createTreeFromText(xml_text);
+
+  NodeStatus status = NodeStatus::IDLE;
+
+  while( ros::ok() && (status == NodeStatus::IDLE || status == NodeStatus::RUNNING))
+  {
+    ros::spinOnce();
+    status = tree.tickRoot();
+    std::cout << status << std::endl;
+    
+    ros::Duration sleep_time(0.01);
+    sleep_time.sleep();
+  }
+
+  return 0;
+}

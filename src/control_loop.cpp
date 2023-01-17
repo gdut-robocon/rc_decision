@@ -2,7 +2,7 @@
  * @Author: JIAlonglong
  * @Date: 2023-01-15 20:20:07
  * @LastEditors: JIAlonglong 2495477531@qq.com
- * @LastEditTime: 2023-01-16 20:48:14
+ * @LastEditTime: 2023-01-17 16:40:30
  * @FilePath: /rc_ws/src/rc_fsm/rc_decision/src/control_loop.cpp
  * @Description: 
  * 
@@ -37,11 +37,12 @@ int main(int argc, char **argv)
     BT::StdCoutLogger logger_cout(tree);
     BT::NodeStatus status = BT::NodeStatus::RUNNING;
     // Keep on ticking until you get either a SUCCESS or FAILURE state
-    while (ros::ok() && status == BT::NodeStatus::RUNNING) {
+    while (ros::ok() && status == BT::NodeStatus::RUNNING) 
+    {
     status = tree.rootNode()->executeTick();
     // Sleep 100 milliseconds
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
-  }
+    }
 
   return 0;
 

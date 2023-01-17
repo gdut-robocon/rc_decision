@@ -70,10 +70,9 @@ add_executable(test_server test/treeNode/test_server.cpp)
 add_dependencies(test_server ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 target_link_libraries(test_server ${catkin_LIBRARIES} )
 
-add_executable(ros_logger src/loggers/rosout_logger.cpp)
-add_dependencies(ros_logger ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-target_link_libraries(ros_logger ${catkin_LIBRARIES} )
-
+# add_executable(control_loop src/control_loop.cpp)
+# add_dependencies(control_loop ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+# target_link_libraries(control_loop ${catkin_LIBRARIES} )
 ######################################################
 # INSTALL
 
