@@ -44,13 +44,13 @@ generate_messages(
 )
 
 catkin_package(
-    INCLUDE_DIRS include blackboard
+    INCLUDE_DIRS include
     LIBRARIES
     CATKIN_DEPENDS ${ROS_DEPENDENCIES}
 )
 
 include_directories( include 
-blackboard ${catkin_INCLUDE_DIRS})
+${catkin_INCLUDE_DIRS})
 
 ######################################################
 # LIBRARIES
@@ -71,12 +71,35 @@ add_executable(test_server test/treeNode/test_server.cpp)
 add_dependencies(test_server ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 target_link_libraries(test_server ${catkin_LIBRARIES} )
 
+add_executable(${PROJECT_NAME} src/move_base_client.cpp src/control_loop.cpp)
+add_dependencies(${PROJECT_NAME} ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES} )
+
 # add_executable(control_loop src/control_loop.cpp)
 # add_dependencies(control_loop ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 # target_link_libraries(control_loop ${catkin_LIBRARIES} )
 ######################################################
 # INSTALL
+# Mark executables and/or libraries for installation
+install(
+        TARGETS ${PROJECT_NAME}
+        ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+        LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+        RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
 
+# Mark cpp header files for installation
+install(
+        DIRECTORY include/${PROJECT_NAME}/
+        DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+        FILES_MATCHING PATTERN "*.h"
+)
+
+# Mark other files for installation
+install(
+        DIRECTORY config
+        DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+)
 
 ######################################################
 # EXAMPLES and TOOLS

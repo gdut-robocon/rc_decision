@@ -1,0 +1,3 @@
+<launch>
+	<node pkg="rc_decision" type="rc_decision" name="rc_decision" output="screen" />
+</launch>

@@ -1,0 +1,9 @@
+<root main_tree_to_execute = "MainTree">
+    <include path="$(find rc_decision)/bt_xml/move_base_client.xml" />
+    <include path="$(find rc_decision)/bt_xml/gimbal_base_client.xml" />
+    <BehaviorTree ID="MainTree">
+        <Sequence>
+            <SubTree ID="MoveBase" target="0.1;0.1;0.1;0.1"/>
+        </Sequence>
+    </BehaviorTree>
+<root>
