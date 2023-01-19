@@ -22,7 +22,7 @@ int main(int argc, char **argv)
     ros::NodeHandle nh("~");
     std::string xml_filename;
     //remember change path
-    //unknown bug error in find path
+    //unknown bug error in find path  try
     nh.param<std::string>("file", xml_filename,"/home/jialong03/rc_ws/src/rc_fsm/rc_decision/bt_xml/control_loop.xml");
     ROS_INFO("Loading XML : %s", xml_filename.c_str());
 
