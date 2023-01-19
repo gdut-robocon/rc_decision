@@ -1,9 +1,22 @@
-<root main_tree_to_execute = "MainTree">
-    <include path="$(find rc_decision)/bt_xml/move_base_client.xml" />
-    <include path="$(find rc_decision)/bt_xml/gimbal_base_client.xml" />
-    <BehaviorTree ID="MainTree">
+<?xml version="1.0"?>
+<root main_tree_to_execute="BehaviorTree">
+    <!-- ////////// -->
+    <BehaviorTree ID="BehaviorTree">
         <Sequence>
-            <SubTree ID="MoveBase" target="0.1;0.1;0.1;0.1"/>
+            <SetBlackboard output_key="goal_A" value="1.0;1.0;0.0"/>
+            <SetBlackboard output_key="goal_B" value="5.0;0.0;0.0"/>
+            <RetryUntilSuccessful num_attempts="6">
+                <Sequence>
+                    <Action ID="MoveBase" goal="goal_A"/>
+                </Sequence>
+            </RetryUntilSuccessful>
         </Sequence>
     </BehaviorTree>
-<root>
+    <!-- ////////// -->
+    <TreeNodesModel>
+        <Action ID="MoveBase">
+            <input_port name="goal">please put in where you want robot to go</input_port>
+        </Action>
+    </TreeNodesModel>
+    <!-- ////////// -->
+</root>

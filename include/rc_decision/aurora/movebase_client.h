@@ -2,7 +2,7 @@
  * @Author: JIAlonglong
  * @Date: 2023-01-17 22:29:59
  * @LastEditors: JIAlonglong 2495477531@qq.com
- * @LastEditTime: 2023-01-18 22:05:30
+ * @LastEditTime: 2023-01-19 17:08:14
  * @FilePath: /rc_ws/src/rc_fsm/rc_decision/include/rc_decision/aurora/movebase_client.h
  * @Description: 
  * 
@@ -13,10 +13,12 @@
 #include <rc_decision/bt_service_node.h>
 #include <rc_decision/bt_action_node.h>
 #include <tf/transform_datatypes.h>
+#include <actionlib/client/simple_action_client.h>
+#include <ros/ros.h>
 
 struct Pose2D
 {
-    double x, y , quaternion_z, quaternion_w;
+    double x, y , theta;
 };
 
 namespace BT
@@ -26,7 +28,7 @@ Pose2D convertFromString(StringView key)
 {
     // three real numbers separated by semicolons
     auto parts = BT::splitString(key, ';');
-    if (parts.size() != 4)
+    if (parts.size() != 3)
     {
         throw BT::RuntimeError("invalid input)");
     }
@@ -35,45 +37,26 @@ Pose2D convertFromString(StringView key)
         Pose2D output;
         output.x     = convertFromString<double>(parts[0]);
         output.y     = convertFromString<double>(parts[1]);
-        output.quaternion_z = convertFromString<double>(parts[2]);
-        output.quaternion_w = convertFromString<double>(parts[3]);
+        output.theta = convertFromString<double>(parts[2]);
         return output;
     }
 }
 } // end namespace BT override
-class MoveBase : public BT::RosActionNode <move_base_msgs::MoveBaseAction>
-{
-    public:
-    //node config necessary!!!
-    MoveBase( ros::NodeHandle& handle, const std::string& name, const BT::NodeConfiguration & conf):
-    RosActionNode<move_base_msgs::MoveBaseAction>(handle, name, conf) {}
 
-    //Input where you want to go
+class MoveBase : public BT::AsyncActionNode
+{
+public:
+
+    MoveBase(const std::string& name, const BT::NodeConfiguration& config)
+        : BT::AsyncActionNode(name, config),
+          _client("move_base", true)
+    {
+    }
+
+    // It is mandatory to define this static method.
     static BT::PortsList providedPorts()
     {
-        return{BT::InputPort<Pose2D>("goal")};
-    }
-    //you should be attention to the pure virtual functions
-    bool sendGoal(GoalType& goal)override
-    {
-        if (!getInput<double>("goal",goal.target_pose.pose.position.x))
-        {
-            return false;
-        }
-        ROS_INFO("MoveBase: sending request");
-        return true;
-    }
-    
-    BT::NodeStatus onResult(const ResultType& res) override
-    {
-        ROS_INFO("MoveBase: received!");
-        if (_aborted)
-        {
-            ROS_ERROR("MoveBase aborted");
-            return BT::NodeStatus::FAILURE;
-        }
-        
-
+        return{ BT::InputPort<Pose2D>("goal") };
     }
 
     virtual BT::NodeStatus tick() override;
@@ -83,8 +66,8 @@ class MoveBase : public BT::RosActionNode <move_base_msgs::MoveBaseAction>
         _aborted = true;
     }
 
-    
-
-    private:
+private:
+    typedef actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> MoveBaseClient;
+    MoveBaseClient _client;
     bool _aborted;
 };

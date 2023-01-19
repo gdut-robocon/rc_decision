@@ -2,7 +2,7 @@
  * @Author: JIAlonglong
  * @Date: 2023-01-15 20:20:07
  * @LastEditors: JIAlonglong 2495477531@qq.com
- * @LastEditTime: 2023-01-18 23:27:06
+ * @LastEditTime: 2023-01-19 19:06:52
  * @FilePath: /rc_ws/src/rc_fsm/rc_decision/src/control_loop.cpp
  * @Description: 
  * 
@@ -16,24 +16,22 @@
 #include <rc_decision/bt_service_node.h>
 #include <rc_decision/bt_action_node.h>
 #include <rc_decision/aurora/movebase_client.h>
-
 int main(int argc, char **argv)
 {
     ros::init(argc, argv, "bt_tree");
-    ros::NodeHandle nh;
+    ros::NodeHandle nh("~");
     std::string xml_filename;
-    nh.param<std::string>("file", xml_filename,"$(find rc_decision)/bt_xml/control_loop.xml");
+    //remember change path
+    //unknown bug error in find path
+    nh.param<std::string>("file", xml_filename,"/home/jialong03/rc_ws/src/rc_fsm/rc_decision/bt_xml/control_loop.xml");
     ROS_INFO("Loading XML : %s", xml_filename.c_str());
 
     //we use factory to register our custom nodes
     BT::BehaviorTreeFactory factory;
 
-    BT::RegisterRosAction<MoveBase>(factory,"MoveBase",nh);
-    //factory.registerNodeType<ChassisCmd>("ChassisCommandVel");
-    //factory.registerNodeType<MoveToClosest>("MoveToClosest");
+    factory.registerNodeType<MoveBase>("MoveBase");
     
     auto tree = factory.createTreeFromFile(xml_filename);
-
     // Create a logger
     BT::StdCoutLogger logger_cout(tree);
     BT::NodeStatus status = BT::NodeStatus::IDLE;

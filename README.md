@@ -2,7 +2,7 @@
  * @Author: JIAlonglong
  * @Date: 2023-01-16 14:24:11
  * @LastEditors: JIAlonglong 2495477531@qq.com
- * @LastEditTime: 2023-01-16 15:51:55
+ * @LastEditTime: 2023-01-19 19:15:10
  * @FilePath: /rc_ws/src/rc_fsm/rc_decision/README.md
  * @Description:
  *
@@ -18,10 +18,10 @@ this is a project based on BT tree . before you use this package , please check 
 Compare with fsm,it seems to able to better clarify the logical state of the robot and separate each function independently.
 it can help us easily orangnize the task through graphical programming.
 
-## the normal operation interface of the project
-
-<image src="$(find rc_decision)/image/1.png">
-
+## the normal operation interface of the project(just for learning)
+![](image/1.png)
+![](image/2.png)
+![](image/3.png)
 ## attention
 
 please close conda when you set up Groot.
