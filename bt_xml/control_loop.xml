@@ -7,16 +7,16 @@
             <SetBlackboard output_key="goal_B" value="5.0;0.0;0.0"/>
             <RetryUntilSuccessful num_attempts="6">
                 <Sequence>
-                    <Action ID="MoveBase" goal="goal_A"/>
+                    <SubTree ID="MoveBase" target="goal_A" />
                 </Sequence>
             </RetryUntilSuccessful>
         </Sequence>
     </BehaviorTree>
     <!-- ////////// -->
-    <TreeNodesModel>
-        <Action ID="MoveBase">
-            <input_port name="goal">please put in where you want robot to go</input_port>
-        </Action>
-    </TreeNodesModel>
+    <BehaviorTree ID="MoveBase">
+		<Sequence name="SetGoal">
+			<MoveBase goal="{target}" />
+		</Sequence>
+	</BehaviorTree>
     <!-- ////////// -->
 </root>
