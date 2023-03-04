@@ -2,7 +2,7 @@
  * @Author: JIAlonglong
  * @Date: 2023-01-15 20:20:07
  * @LastEditors: JIAlonglong 2495477531@qq.com
- * @LastEditTime: 2023-01-19 19:06:52
+ * @LastEditTime: 2023-03-04 11:33:57
  * @FilePath: /rc_ws/src/rc_fsm/rc_decision/src/control_loop.cpp
  * @Description: 
  * 
@@ -22,13 +22,18 @@ int main(int argc, char **argv)
     ros::NodeHandle nh("~");
     std::string xml_filename;
     //remember change path
-    //unknown bug error in find path  try
-    nh.param<std::string>("file", xml_filename,"/home/jialong03/rc_ws/src/rc_fsm/rc_decision/bt_xml/control_loop.xml");
+    nh.param<std::string>("file", xml_filename,"control_loop.xml");
     ROS_INFO("Loading XML : %s", xml_filename.c_str());
 
+    std::string xml_content;
+    
     //we use factory to register our custom nodes
     BT::BehaviorTreeFactory factory;
-
+    if (!nh.getParam(xml_filename, xml_content)) 
+    {
+      ROS_ERROR("Failed to load XML from parameter server: %s", xml_filename.c_str());
+      return 1;
+    }
     factory.registerNodeType<MoveBase>("MoveBase");
     
     auto tree = factory.createTreeFromFile(xml_filename);

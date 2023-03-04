@@ -1,7 +1,0 @@
-<root>
-    <BehaviorTree ID="MoveBase">
-        <Sequence name="SetGoal">
-            <MoveBase goal="{target}" />
-        </Sequence>
-    </BehaviorTree>
-</root>
