@@ -2,15 +2,17 @@
  * @Author: JIAlonglong
  * @Date: 2023-01-15 20:19:40
  * @LastEditors: JIAlonglong 2495477531@qq.com
- * @LastEditTime: 2023-01-19 17:16:09
+ * @LastEditTime: 2023-03-08 14:16:36
  * @FilePath: /rc_ws/src/rc_fsm/rc_decision/src/move_base_client.cpp
  * @Description: 
  * 
  * Copyright (c) 2023 by JIAlonglong 2495477531@qq.com, All Rights Reserved. 
  */
 #include <rc_decision/aurora/movebase_client.h>
+#include <rc_msgs/GoalPoint.h>
+#include <ros/ros.h>
 //you can also write in tick function
-BT::NodeStatus MoveBase::tick() {
+BT::NodeStatus rc_decision::MoveBase::tick() {
   // if no server is present, fail after 2 seconds
   if (!_client.waitForServer(ros::Duration(2.0))) {
     ROS_ERROR("Can't contact move_base server");
@@ -18,8 +20,9 @@ BT::NodeStatus MoveBase::tick() {
   }
 
   // Take the goal from the InputPort of the Node
+  rc_msgs::GoalPoint::ConstPtr _msg;
   Pose2D goal;
-  if (!getInput<Pose2D>("goal", goal)) {
+    if (!getInput<Pose2D>("goal", goal)) {
     // if I can't get this, there is something wrong with your BT.
     // For this reason throw an exception instead of returning FAILURE
     throw BT::RuntimeError("missing required input [goal]");
@@ -40,7 +43,6 @@ BT::NodeStatus MoveBase::tick() {
   tf::quaternionTFToMsg(rot, msg.target_pose.pose.orientation);
 
   _client.sendGoal(msg);
-
   while (!_aborted && !_client.waitForResult(ros::Duration(0.02))) {
     // polling at 50 Hz. No big deal in terms of CPU
   }
