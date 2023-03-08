@@ -2,7 +2,7 @@
  * @Author: JIAlonglong
  * @Date: 2023-01-17 22:29:59
  * @LastEditors: JIAlonglong 2495477531@qq.com
- * @LastEditTime: 2023-01-19 17:08:14
+ * @LastEditTime: 2023-03-08 13:36:46
  * @FilePath: /rc_ws/src/rc_fsm/rc_decision/include/rc_decision/aurora/movebase_client.h
  * @Description: 
  * 
@@ -15,7 +15,6 @@
 #include <tf/transform_datatypes.h>
 #include <actionlib/client/simple_action_client.h>
 #include <ros/ros.h>
-
 struct Pose2D
 {
     double x, y , theta;
@@ -42,7 +41,8 @@ Pose2D convertFromString(StringView key)
     }
 }
 } // end namespace BT override
-
+namespace rc_decision
+{
 class MoveBase : public BT::AsyncActionNode
 {
 public:
@@ -71,3 +71,4 @@ private:
     MoveBaseClient _client;
     bool _aborted;
 };
+} // namespace rc_decision

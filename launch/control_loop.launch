@@ -1,10 +1,7 @@
 <launch>
-	<arg name="robot_type" default="$(env ROBOT_TYPE)" doc="Robot type [rabbit,elephant]"/>
-	
-	<!-- load BT tree made by Groot -->
-	<rosparam command="load" file="$(find rc_config)/config/rc_decision/$(arg robot_type)/bt_xml/control_loop.xml" />
+	<arg name="robot_type" default="rabbit" doc="Robot type [rabbit, elephant]"/>
 	<!-- start rc_decision node -->
-	<node pkg="rc_decision" type="rc_decision" name="rc_decision" output="screen" >
-		<param name="file" value="control_loop.xml" />
+	<node pkg="rc_decision" type="rc_decision" name="rc_decision" output="screen">
+	<param name="file_path" type="string" value="$(find rc_config)/config/rc_decision/$(arg robot_type)/bt_xml/control_loop.xml"/>
 	</node>
 </launch>
