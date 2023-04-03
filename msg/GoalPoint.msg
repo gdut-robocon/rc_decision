@@ -1,0 +1,2 @@
+geometry_msgs/PointStamped goal
+bool master
