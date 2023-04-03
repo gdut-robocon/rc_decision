@@ -7,16 +7,9 @@
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
 #pragma once
-#include <rc_msgs/ActionData.h>
-#include <rc_msgs/ActuatorState.h>
-#include <rc_msgs/ChassisCmd.h>
-// #include <rc_msgs/GimbalCmd.h>
-// #include <rc_msgs/GimbalDesError.h>
-#include <rc_msgs/LpData.h>
-#include <rc_msgs/IbusData.h>
-// #include <rc_msgs/GoalPoint.h>
 #include <rc_decision/bt_action_node.h>
 #include <rc_decision/bt_service_node.h>
+#include <behaviortree_cpp_v3/action_node.h>
 #include <std_msgs/Float64MultiArray.h>
 
 using namespace std;

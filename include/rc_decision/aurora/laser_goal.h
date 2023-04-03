@@ -21,6 +21,8 @@
 
 
 using namespace std;
+typedef actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> MoveBaseClient;
+
 struct Pose2D
 {
   double x, y, theta;
@@ -35,7 +37,7 @@ class laser_goal : public BT::StatefulActionNode {
       ac("move_base", true)
     {
         ros::NodeHandle n;
-        radar_org_data = n.subscribe("laser_the_best_way_to_shoot", 5, &laser_goal::LaserCallback, this);
+        radar_org_data_ = n.subscribe("laser_the_best_way_to_shoot", 5, &laser_goal::LaserCallback, this);
     };
 
   // Initialization of keys
@@ -52,17 +54,16 @@ class laser_goal : public BT::StatefulActionNode {
     void onHalted() override;
 
   private:
-    Pose2D goal_point;
-    typedef actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> MoveBaseClient;
-    MoveBaseClient ac;
+    Pose2D goal_point_;
+    MoveBaseClient ac_;
     bool _aborted;
     
-    std_msgs::Float64MultiArray the_best_way;
-    ros::Subscriber radar_org_data;
+    std_msgs::Float64MultiArray the_best_way_;
+    ros::Subscriber radar_org_data_;
     chrono::system_clock::time_point _completion_time;
     void LaserCallback(const std_msgs::Float64MultiArray msg)
     {
-      the_best_way=msg;
+      the_best_way_=msg;
     };
     
 };
