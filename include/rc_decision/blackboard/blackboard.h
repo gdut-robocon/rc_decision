@@ -3,8 +3,6 @@
  * @Date: 2023-03-15 11:04:27
  * @LastEditors: robox-xx 1399786770@qq.com
  * @LastEditTime: 2023-04-03 14:19:33
- * @FilePath: /rc_ws/src/rc_decision/include/rc_decision/blackboard/blackboard.h
- * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
 #pragma once
 #include <rc_decision/bt_action_node.h>
@@ -13,11 +11,6 @@
 #include <std_msgs/Float64MultiArray.h>
 
 using namespace std;
-// struct Pose2D
-// {
-//   double x, y, theta;
-// };
-
 namespace rc_decision
 {
 class BlackboardRead : public BT::SyncActionNode

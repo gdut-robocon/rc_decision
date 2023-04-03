@@ -3,9 +3,7 @@
  * @Date: 2023-03-29 14:23:28
  * @LastEditors: robox-xx 1399786770@qq.com
  * @LastEditTime: 2023-04-03 14:21:56
- * @FilePath: /rc_ws/src/rc_decision/include/rc_decision/aurora/laser_goal.h
  */
-
 #pragma once
 #ifndef MOVEBASE_BT_NODES_H
 #define MOVEBASE_BT_NODES_H

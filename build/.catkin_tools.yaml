@@ -1,6 +1,0 @@
-devel_space: /home/xie/rc_decision/devel
-install: false
-install_space: /home/xie/rc_decision/install
-profile: default
-source_space: /home/xie/rc_decision/src
-workspace: /home/xie/rc_decision
