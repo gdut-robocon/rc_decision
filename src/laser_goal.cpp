@@ -62,7 +62,6 @@ BT::NodeStatus rc_decision::laser_goal::onRunning()
 {
   //Judge whether the position of the vehicle has arrived
   if(0.7<abs(the_best_way_.data[0])<0.9 && 0.8<abs(the_best_way_.data[1])<0.9)
-  // if(true)
   {
     ROS_INFO("Target reached");
     return BT::NodeStatus::SUCCESS;

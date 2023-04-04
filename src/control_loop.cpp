@@ -28,7 +28,7 @@ int main(int argc, char **argv)
     auto tree = factory.createTreeFromFile(file_path);
     ROS_INFO("Loading XML :%s", file_path.c_str());
     // Create a logger
-    // BT::StdCoutLogger logger_cout(tree);
+    BT::StdCoutLogger logger_cout(tree);
     BT::NodeStatus status = BT::NodeStatus::IDLE;
 
     #ifdef ZMQ_FOUND

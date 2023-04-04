@@ -10,7 +10,6 @@
 #include <behaviortree_cpp_v3/action_node.h>
 #include <std_msgs/Float64MultiArray.h>
 
-using namespace std;
 namespace rc_decision
 {
 class BlackboardRead : public BT::SyncActionNode
@@ -44,12 +43,12 @@ class BlackboardRead : public BT::SyncActionNode
     
     ros::Subscriber radar_tf_data;
     Pose2D goal;
-
+    //存储进黑板的数据的获取
     void LadarCallback(const std_msgs::Float64MultiArray msg)
    {
-    goal.x=msg.data[0];
-    goal.y=msg.data[1];  
-    goal.theta = atan(goal.x/goal.y);
+        goal.x=msg.data[0];
+        goal.y=msg.data[1];  
+        goal.theta = atan(goal.x/goal.y);
    }
 };
 } //namespace rc_decision
