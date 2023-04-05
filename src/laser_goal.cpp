@@ -40,7 +40,6 @@ if(goal_point.x!=0&&goal_point.y!=0&&std::isfinite(goal_point.x)&&std::isfinite(
   }
  if (_aborted) {
     // this happens only if method halt() was invoked
-    //_client.cancelAllGoals();
     ROS_ERROR("MoveBase aborted");
     return BT::NodeStatus::FAILURE;
   }
@@ -62,7 +61,6 @@ BT::NodeStatus rc_decision::laser_goal::onRunning()
 {
   //Judge whether the position of the vehicle has arrived
   if(0.7<abs(the_best_way.data[0])<0.9 && 0.8<abs(the_best_way.data[1])<0.9)
-  // if(true)
   {
     ROS_INFO("Target reached");
     return BT::NodeStatus::SUCCESS;
