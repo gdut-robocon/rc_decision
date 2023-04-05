@@ -3,6 +3,7 @@
 #include "behaviortree_cpp_v3/loggers/bt_zmq_publisher.h"
 #include "behaviortree_cpp_v3/loggers/bt_minitrace_logger.h"
 #include "behaviortree_cpp_v3/loggers/bt_file_logger.h"
+#include "behaviortree_cpp_v3/loggers/bt_cout_logger.h"
 #include <ros/ros.h>
 #ifdef SUPPORT_OPENVINO
   #include "openvino_event.h"
@@ -41,8 +42,6 @@ int main(int argc, char **argv)
   {
     status = tree.tickRoot();
     std::cout << status << std::endl;
-    // ros::Duration sleep_time(0.01);
-    // sleep_time.sleep();
     loop_rate.sleep();
     ros::spinOnce();
   }

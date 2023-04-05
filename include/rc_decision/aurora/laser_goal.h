@@ -3,7 +3,9 @@
  * @Date: 2023-03-29 14:23:28
  * @LastEditors: robox-xx 1399786770@qq.com
  * @LastEditTime: 2023-04-03 14:21:56
+ * @FilePath: /rc_ws/src/rc_decision/include/rc_decision/aurora/laser_goal.h
  */
+
 #pragma once
 #include <math.h>
 #include<chrono>
@@ -17,8 +19,6 @@
 
 
 using namespace std;
-typedef actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> MoveBaseClient;
-
 struct Pose2D
 {
   double x, y, theta;
@@ -33,7 +33,7 @@ class laser_goal : public BT::StatefulActionNode {
       ac("move_base", true)
     {
         ros::NodeHandle n;
-        radar_org_data_ = n.subscribe("the_best_way", 5, &laser_goal::LaserCallback, this);
+        radar_org_data = n.subscribe("/radar/shootPosition", 5, &laser_goal::LaserCallback, this);
     };
 
   // Initialization of keys
@@ -50,19 +50,20 @@ class laser_goal : public BT::StatefulActionNode {
     void onHalted() override;
 
   private:
-    Pose2D goal_point_;
-    MoveBaseClient ac_;
+    Pose2D goal_point;
+    typedef actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> MoveBaseClient;
+    MoveBaseClient ac;
     bool _aborted;
     
-    std_msgs::Float64MultiArray the_best_way_;
-    ros::Subscriber radar_org_data_;
+    std_msgs::Float64MultiArray the_best_way;
+    ros::Subscriber radar_org_data;
     chrono::system_clock::time_point _completion_time;
     void LaserCallback(const std_msgs::Float64MultiArray msg)
     {
-      the_best_way_=msg;
+      the_best_way=msg;
     };
     
 };
 
 }
-#endif   // laser_goal
+// laser_goal
