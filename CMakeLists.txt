@@ -55,17 +55,6 @@ include_directories( include
 ${catkin_INCLUDE_DIRS})
 include_directories(${BEHAVIORTREE_CPP_V3_INCLUDE_DIRS})
 
-######################################################
-# LIBRARIES
-
-#header only for the time being
-
-#add_library(behaviortree_ros ... )
-#target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES})
-
-######################################################
-# TESTS
-
 add_executable(test_bt test/treeNode/test_bt.cpp)
 add_dependencies(test_bt ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 target_link_libraries(test_bt ${catkin_LIBRARIES} )
@@ -74,16 +63,10 @@ add_executable(test_server test/treeNode/test_server.cpp)
 add_dependencies(test_server ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 target_link_libraries(test_server ${catkin_LIBRARIES} )
 
-add_executable(${PROJECT_NAME} src/move_base_client.cpp src/control_loop.cpp src/lasermove_client.cpp src/laser_goal.cpp)
+add_executable(${PROJECT_NAME} src/move_base_client.cpp src/control_loop.cpp src/laser_goal.cpp src/ChassisMove.cpp)
 add_dependencies(${PROJECT_NAME} ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES} )
 
-# add_executable(control_loop src/control_loop.cpp)
-# add_dependencies(control_loop ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-# target_link_libraries(control_loop ${catkin_LIBRARIES} )
-######################################################
-# INSTALL
-# Mark executables and/or libraries for installation
 install(
         TARGETS ${PROJECT_NAME}
         ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}

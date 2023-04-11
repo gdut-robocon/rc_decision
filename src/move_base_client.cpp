@@ -9,7 +9,6 @@
  * Copyright (c) 2023 by JIAlonglong 2495477531@qq.com, All Rights Reserved. 
  */
 #include <rc_decision/aurora/movebase_client.h>
-#include <rc_msgs/GoalPoint.h>
 #include <ros/ros.h>
 //you can also write in tick function
 BT::NodeStatus rc_decision::MoveBase::tick() {
@@ -20,7 +19,6 @@ BT::NodeStatus rc_decision::MoveBase::tick() {
   }
 
   // Take the goal from the InputPort of the Node
-  rc_msgs::GoalPoint::ConstPtr _msg;
   Pose2D goal;
     if (!getInput<Pose2D>("goal", goal)) {
     // if I can't get this, there is something wrong with your BT.

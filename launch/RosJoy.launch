@@ -1,0 +1,22 @@
+<launch>
+    <arg name="robot_type" default="rabbit" doc="Robot type [rabbit, elephant]"/>
+    <!--joy_node-->
+    <node respawn="true" pkg="joy"
+          type="joy_node" name="rc_joy" >
+        <param name="dev" type="string" value="/dev/input/js0" />
+        <param name="deadzone" value="0.48" />
+    </node>
+
+    <node pkg="rc_decision" type="rc_decision" name="rc_decision" output="screen">
+        <!--ros_joy-->
+        <param name="axes_lx" value="1"/>
+        <param name="axes_ly" value="0"/>
+        <param name="axes_angular" value="3"/>
+        <!--chassis_move-->
+        <param name="linear_x_scale" value="1"/>
+        <param name="linear_y_scale" value="1"/>
+        <param name="angular_z_scale" value="1"/>
+        <!--control_loop-->
+        <param name="file_path" type="string" value="$(find rc_config)/config/rc_decision/$(arg robot_type)/bt_xml/rc_joy.xml"/>
+    </node>>
+</launch>
