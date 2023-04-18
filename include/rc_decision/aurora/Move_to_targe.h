@@ -1,8 +1,8 @@
 /*
  * @Author: robox-xx 1399786770@qq.com
  * @Date: 2023-03-29 14:23:28
- * @LastEditors: robox-xx 1399786770@qq.com
- * @LastEditTime: 2023-04-03 14:21:56
+ * @LastEditors: robox-xx 118261752+robox-xx@users.noreply.github.com
+ * @LastEditTime: 2023-04-18 15:46:13
  * @FilePath: /rc_ws/src/rc_decision/include/rc_decision/aurora/laser_goal.h
  */
 
@@ -11,6 +11,7 @@
 #include<chrono>
 #include <iostream>
 #include <ros/ros.h>
+#include <geometry_msgs/Twist.h>
 #include <behaviortree_cpp_v3/action_node.h>
 #include "behaviortree_cpp_v3/behavior_tree.h"
 #include <move_base_msgs/MoveBaseAction.h>
@@ -20,14 +21,14 @@
 
 namespace rc_decision {
 
-class laser_goal : public BT::StatefulActionNode {
+class Move_to_targe : public BT::AsyncActionNode {
  public:
-  laser_goal(const std::string& name, const BT::NodeConfiguration& config) 
-      : BT::StatefulActionNode(name, config), 
-      ac("move_base", true)
+  Move_to_targe(const std::string& name, const BT::NodeConfiguration& config) 
+      : BT::AsyncActionNode(name, config), 
+      ac_("move_base", true)
     {
         ros::NodeHandle n;
-        radar_org_data = n.subscribe("/radar/shootPosition", 5, &laser_goal::LaserCallback, this);
+        pub_stop = n.advertise<geometry_msgs::Twist>("/cmd_vel", 1);
     };
 
   // Initialization of keys
@@ -37,27 +38,23 @@ class laser_goal : public BT::StatefulActionNode {
     return ports_list;
   }
 
-    BT::NodeStatus onStart() override;
+    BT::NodeStatus tick() override;
+    void halt() override;
 
-    BT::NodeStatus onRunning() override;
-
-    void onHalted() override;
 
   private:
     Pose2D goal_point;
     typedef actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> MoveBaseClient;
-    MoveBaseClient ac;
+    MoveBaseClient ac_;
     bool _aborted;
-    
-    std_msgs::Float64MultiArray the_best_way;
+  
     ros::Subscriber radar_org_data;
     std::chrono::system_clock::time_point _completion_time;
-    void LaserCallback(const std_msgs::Float64MultiArray msg)
-    {
-      the_best_way=msg;
-    };
+
+    ros::Publisher pub_stop;
+    geometry_msgs::Twist vel;
     
 };
 
 }
-// laser_goal
+// Move_to_targe

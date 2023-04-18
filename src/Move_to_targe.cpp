@@ -1,11 +1,16 @@
+/*
+ * @Author: robox-xx 1399786770@qq.com
+ * @Date: 2023-03-15 11:04:27
+ * @LastEditors: robox-xx 118261752+robox-xx@users.noreply.github.com
+ * @LastEditTime: 2023-04-18 15:47:04
+ */
 #include <ros/ros.h>
-#include <rc_decision/aurora/laser_goal.h>
+#include <rc_decision/aurora/Move_to_targe.h>
 #include <move_base_msgs/MoveBaseAction.h>
 #include <tf/transform_datatypes.h>
-BT::NodeStatus rc_decision::laser_goal::onStart()
+BT::NodeStatus rc_decision::Move_to_targe::tick()
 {
-
-  if (!ac.waitForServer(ros::Duration(2.0))) {
+  if (!ac_.waitForServer(ros::Duration(2.0))) {
     ROS_ERROR("Can't contact move_base server");
     return BT::NodeStatus::FAILURE;
   }
@@ -24,53 +29,43 @@ if(goal_point.x!=0&&goal_point.y!=0&&std::isfinite(goal_point.x)&&std::isfinite(
   move_base_msgs::MoveBaseGoal msg;
   msg.target_pose.header.frame_id = "map";
   msg.target_pose.header.stamp = ros::Time::now();
-  msg.target_pose.pose.position.x = goal_point.x;
-  msg.target_pose.pose.position.y = goal_point.y;
-    // msg.target_pose.pose.position.x = 2;
-    // msg.target_pose.pose.position.y = 1;
-    msg.target_pose.pose.orientation.z = 0;
-    msg.target_pose.pose.orientation.w = 1;
+  //后期通过筛选再选择要到达的点
+  // msg.target_pose.pose.position.x = goal_point.x;
+  // msg.target_pose.pose.position.y = goal_point.y;
+  msg.target_pose.pose.position.x = 1;
+  msg.target_pose.pose.position.y = 0;
+  msg.target_pose.pose.orientation.z = 0;
+  msg.target_pose.pose.orientation.w = 1;
 
   // We use this counter to simulate an action that takes a certain
   // amount of time to be completed (200 ms)
-  ac.sendGoal(msg);
+  ac_.sendGoal(msg);
   _aborted = false;
-  while (!_aborted && !ac.waitForResult(ros::Duration(0.02))) {
-    // polling at 50 Hz. No big deal in terms of CPU
-  }
+  
+
+ while (ros::ok() && !ac_.waitForResult(ros::Duration(0.1))){}
  if (_aborted) {
     // this happens only if method halt() was invoked
-    //_client.cancelAllGoals();
     ROS_ERROR("MoveBase aborted");
     return BT::NodeStatus::FAILURE;
   }
-  if (ac.getState() != actionlib::SimpleClientGoalState::SUCCEEDED) {
+  if (ac_.getState() != actionlib::SimpleClientGoalState::SUCCEEDED) {
     ROS_ERROR("MoveBase failed");
     return BT::NodeStatus::FAILURE;
   }
-  return BT::NodeStatus::RUNNING;
+  return BT::NodeStatus::SUCCESS;
 }
 else
 {
   return BT::NodeStatus::SUCCESS;
+} 
 }
-
-  
-}
-
-BT::NodeStatus rc_decision::laser_goal::onRunning()
+//被修饰节点调用后暂停导航
+void rc_decision::Move_to_targe::halt()
 {
-  //Judge whether the position of the vehicle has arrived
-  if(0.7<abs(the_best_way.data[0])<0.9 && 0.8<abs(the_best_way.data[1])<0.9)
-  {
-    ROS_INFO("Target reached");
-    return BT::NodeStatus::SUCCESS;
-  }
-    
-  return BT::NodeStatus::RUNNING;
-}
-
-void rc_decision::laser_goal::onHalted()
-{
-  printf("[ MoveBase: ABORTED ]");
+  ac_.cancelAllGoals();
+  vel.linear.x = 0.0;
+  vel.linear.y = 0.0;
+  vel.angular.z = 0.0;
+  pub_stop.publish(vel);
 }
