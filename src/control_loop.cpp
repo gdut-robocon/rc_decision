@@ -2,7 +2,7 @@
  * @Author: robox-xx 118261752+robox-xx@users.noreply.github.com
  * @Date: 2023-04-17 22:21:48
  * @LastEditors: robox-xx 118261752+robox-xx@users.noreply.github.com
- * @LastEditTime: 2023-04-17 22:26:11
+ * @LastEditTime: 2023-04-18 15:28:19
  * @FilePath: /rc_decision/src/control_loop.cpp
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -31,8 +31,12 @@ int main(int argc, char **argv)
     BT::BehaviorTreeFactory factory;
     
     factory.registerNodeType<rc_decision::MoveBase>("MoveBase");
+
+    factory.registerNodeType<rc_decision::Move_to_targe>("Move_to_targe");    
     factory.registerNodeType<rc_decision::StopMovement>("StopMovement"); 
+    factory.registerNodeType<rc_decision::Chassis_Control>("Chassis_Control");
     factory.registerNodeType<rc_decision::BlackboardRead>("BlackboardRead");
+    
     factory.registerNodeType<rc_decision::RosJoy>("RosJoy");
     factory.registerNodeType<rc_decision::ChassisMove>("ChassisMove");
 
