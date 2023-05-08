@@ -33,7 +33,7 @@ public:
   // Initialization of keys
   static BT::PortsList providedPorts()
   {
-    BT::PortsList ports_list;  
+    BT::PortsList ports_list; 
     ports_list.insert(BT::InputPort<Pose2D>("Goal_point"));
     return ports_list;
   }
@@ -57,7 +57,6 @@ private:
   {
     the_best_way = msg;
   };
-    
 };
 
 }  // namespace rc_decision
