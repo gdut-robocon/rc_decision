@@ -37,7 +37,6 @@ protected:
   int call_number_;
 
 public:
-
   FibonacciServer(std::string name)
     : server_(nh_, name, boost::bind(&FibonacciServer::executeCB, this, _1), false), action_name_(name)
   {
@@ -76,7 +75,6 @@ public:
     {
       required_time = 100;
     }
-
 
     // check periodically for preemption
     while (required_time > 0)
