@@ -46,7 +46,6 @@ namespace rc_decision
 class MoveBase : public BT::AsyncActionNode
 {
 public:
-
   MoveBase(const std::string& name, const BT::NodeConfiguration& config)
     : BT::AsyncActionNode(name, config), _client("move_base", true)
   {
