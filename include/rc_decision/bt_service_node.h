@@ -30,14 +30,12 @@ template <class ServiceT>
 class RosServiceNode : public BT::SyncActionNode
 {
 protected:
-
   RosServiceNode(ros::NodeHandle& nh, const std::string& name, const BT::NodeConfiguration& conf)
     : BT::SyncActionNode(name, conf), node_(nh)
   {
   }
 
 public:
-
   using BaseClass = RosServiceNode<ServiceT>;
   using ServiceType = ServiceT;
   using RequestType = typename ServiceT::Request;
