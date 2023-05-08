@@ -49,7 +49,7 @@ BT::NodeStatus rc_decision::MoveBase::tick()
     // polling at 50 Hz. No big deal in terms of CPU
   }
 
-  if (_aborted) 
+  if (_aborted)
   {
     // this happens only if method halt() was invoked
     //_client.cancelAllGoals();
