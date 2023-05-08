@@ -51,7 +51,7 @@ catkin_package(
     CATKIN_DEPENDS ${ROS_DEPENDENCIES}
 )
 
-include_directories( include 
+include_directories( include
 ${catkin_INCLUDE_DIRS})
 include_directories(${BEHAVIORTREE_CPP_V3_INCLUDE_DIRS})
 
