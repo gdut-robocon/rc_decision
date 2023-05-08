@@ -20,7 +20,6 @@ public:
     ros::NodeHandle nh;
     radar_tf_data_ = nh.subscribe("/map/shootPosition", 5, &BlackboardRead::LadarCallback, this);
   };
-    
   // Initialization of keys
   static BT::PortsList providedPorts()
   {
@@ -28,17 +27,13 @@ public:
     ports_list.insert(BT::OutputPort<Pose2D>("Goal"));
     return ports_list;
   }
- 
   // Adding data to the blackboard
   BT::NodeStatus tick() override
   {
     setOutput("Goal", goal_);
     ROS_INFO("i send x:%f, y:%f", goal_.x, goal_.y);
- 
     return BT::NodeStatus::SUCCESS;
   };
-
-
 
 private:
   ros::Subscriber radar_tf_data_;
