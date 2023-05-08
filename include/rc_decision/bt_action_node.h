@@ -38,7 +38,6 @@ template <class ActionT>
 class RosActionNode : public BT::ActionNodeBase
 {
 protected:
-
   RosActionNode(ros::NodeHandle& nh, const std::string& name, const BT::NodeConfiguration& conf)
     : BT::ActionNodeBase(name, conf), node_(nh)
   {
@@ -50,7 +49,7 @@ public:
   using BaseClass = RosActionNode<ActionT>;
   using ActionClientType = actionlib::SimpleActionClient<ActionT>;
   using ActionType = ActionT;
-  using GoalType   = typename ActionT::_action_goal_type::_goal_type;
+  using GoalType = typename ActionT::_action_goal_type::_goal_type;
   using ResultType = typename ActionT::_action_result_type::_result_type;
 
   RosActionNode() = delete;
@@ -111,13 +110,14 @@ protected:
     ros::Duration timeout(static_cast<double>(msec) * 1e-3);
 
     bool connected = action_client_->waitForServer(timeout);
-    if( !connected )
+    if (!connected)
     {
       return onFailedRequest(MISSING_SERVER);
     }
 
     // first step to be done only at the beginning of the Action
-    if (status() == BT::NodeStatus::IDLE) {
+    if (status() == BT::NodeStatus::IDLE)
+    {
       // setting the status to RUNNING to notify the BT Loggers (if any)
       setStatus(BT::NodeStatus::RUNNING);
 
