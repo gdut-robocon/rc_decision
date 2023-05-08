@@ -102,8 +102,8 @@ protected:
 
     typename ServiceT::Request request;
     sendRequest(request);
-    bool received = service_client_.call( request, reply_ );
-    if( !received )
+    bool received = service_client_.call(request, reply_);
+    if (!received)
     {
       return onFailedRequest(FAILED_CALL);
     }
@@ -111,28 +111,25 @@ protected:
   }
 };
 
-
 /// Method to register the service into a factory.
 /// It gives you the opportunity to set the ros::NodeHandle.
-template <class DerivedT> static
-  void RegisterRosService(BT::BehaviorTreeFactory& factory,
-                     const std::string& registration_ID,
-                     ros::NodeHandle& node_handle)
+template <class DerivedT>
+static void RegisterRosService(BT::BehaviorTreeFactory& factory, const std::string& registration_ID,
+                               ros::NodeHandle& node_handle)
 {
   NodeBuilder builder = [&node_handle](const std::string& name, const NodeConfiguration& config) {
-    return std::make_unique<DerivedT>(node_handle, name, config );
+    return std::make_unique<DerivedT>(node_handle, name, config);
   };
 
   TreeNodeManifest manifest;
   manifest.type = getType<DerivedT>();
   manifest.ports = DerivedT::providedPorts();
   manifest.registration_ID = registration_ID;
-  const auto& basic_ports = RosServiceNode< typename DerivedT::ServiceType>::providedPorts();
-  manifest.ports.insert( basic_ports.begin(), basic_ports.end() );
+  const auto& basic_ports = RosServiceNode<typename DerivedT::ServiceType>::providedPorts();
+  manifest.ports.insert(basic_ports.begin(), basic_ports.end());
 
-  factory.registerBuilder( manifest, builder );
+  factory.registerBuilder(manifest, builder);
 }
-
 
 }  // namespace BT
 
