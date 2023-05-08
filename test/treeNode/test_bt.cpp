@@ -137,7 +137,7 @@ public:
     {
       fibonacci_result += n;
     }
-    if( fibonacci_result == expected_result_)
+    if (fibonacci_result == expected_result_)
     {
       setOutput<int>("result", fibonacci_result);
       return NodeStatus::SUCCESS;
