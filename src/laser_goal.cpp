@@ -16,7 +16,6 @@ BT::NodeStatus rc_decision::laser_goal::onStart()
   }
   ROS_INFO("[ MoveBase: SEND REQUEST ]. goal: x=%f y=%f theta=%f\n", goal_point.x, goal_point.y, goal_point.theta);
 
-
   if (goal_point.x != 0 && goal_point.y != 0 && std::isfinite(goal_point.x) && std::isfinite(goal_point.y))
   {
     // Build the message from Pose2D
@@ -51,11 +50,11 @@ BT::NodeStatus rc_decision::laser_goal::onStart()
       return BT::NodeStatus::FAILURE;
     }
     return BT::NodeStatus::RUNNING;
-}
+  }
   else
   {
     return BT::NodeStatus::SUCCESS;
-  }  
+  }
 }
 
 BT::NodeStatus rc_decision::laser_goal::onRunning()
