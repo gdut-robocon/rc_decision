@@ -44,5 +44,5 @@ int main(int argc, char** argv)
     loop_rate.sleep();
     ros::spinOnce();
   }
-  return 0;  
+  return 0;
 }
