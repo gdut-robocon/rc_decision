@@ -45,17 +45,18 @@ public:
   }
 
 private:
-    void joyCallback(const sensor_msgs::Joy::ConstPtr& joy)
-    {
-        joy_received_= true;
-        joy_lx_=joy->axes[linear_x];
-        joy_ly_ = joy->axes[linear_y];
-        joy_ry_=joy->axes[angular_];
-    }
-    ros::Subscriber joy_sub_;
-    bool joy_received_;
-    float joy_lx_,joy_ly_,joy_rx_,joy_ry_;
-    int A_button_,B_button_,X_button_,Y_button_,LB_button_,RB_button_,L_THUMB_button_,R_THUMB_button_,BACK_button_,START_button_;
-    int linear_x,linear_y,angular_;
+  void joyCallback(const sensor_msgs::Joy::ConstPtr& joy)
+  {
+    joy_received_ = true;
+    joy_lx_ = joy->axes[linear_x];
+    joy_ly_ = joy->axes[linear_y];
+    joy_ry_ = joy->axes[angular_];
+  }
+  ros::Subscriber joy_sub_;
+  bool joy_received_;
+  float joy_lx_, joy_ly_, joy_rx_, joy_ry_;
+  int A_button_, B_button_, X_button_, Y_button_, LB_button_, RB_button_, L_THUMB_button_, R_THUMB_button_,
+      BACK_button_, START_button_;
+  int linear_x, linear_y, angular_;
 };
-}//namespace rc_decision
+}  // namespace rc_decision
