@@ -4,9 +4,9 @@
  * @LastEditors: JIAlonglong 2495477531@qq.com
  * @LastEditTime: 2023-01-17 20:31:10
  * @FilePath: /rc_ws/src/rc_fsm/rc_decision/test/treeNode/test_bt.cpp
- * @Description: 
- * 
- * Copyright (c) 2023 by JIAlonglong 2495477531@qq.com, All Rights Reserved. 
+ * @Description:
+ *
+ * Copyright (c) 2023 by JIAlonglong 2495477531@qq.com, All Rights Reserved.
  */
 #include <rc_decision/bt_service_node.h>
 #include <rc_decision/bt_action_node.h>
@@ -23,23 +23,28 @@ using namespace BT;
 class PrintValue : public BT::SyncActionNode
 {
 public:
-  PrintValue(const std::string& name, const BT::NodeConfiguration& config)
-  : BT::SyncActionNode(name, config) {}
+  PrintValue(const std::string& name, const BT::NodeConfiguration& config) : BT::SyncActionNode(name, config)
+  {
+  }
 
-  BT::NodeStatus tick() override {
+  BT::NodeStatus tick() override
+  {
     int value = 0;
-    if( getInput("message", value ) ){
+    if (getInput("message", value))
+    {
       std::cout << "PrintValue: " << value << std::endl;
       return NodeStatus::SUCCESS;
     }
-    else{
-      std::cout << "PrintValue FAILED "<< std::endl;
+    else
+    {
+      std::cout << "PrintValue FAILED " << std::endl;
       return NodeStatus::FAILURE;
     }
   }
 
-  static BT::PortsList providedPorts() {
-    return{ BT::InputPort<int>("message") };
+  static BT::PortsList providedPorts()
+  {
+    return { BT::InputPort<int>("message") };
   }
 };
 
@@ -48,19 +53,17 @@ public:
 // http://wiki.ros.org/ROS/Tutorials/WritingServiceClient%28c%2B%2B%29
 //-------------------------------------------------------------
 
-class AddTwoIntsAction: public RosServiceNode<rc_decision::AddTwoInts>
+class AddTwoIntsAction : public RosServiceNode<rc_decision::AddTwoInts>
 {
-
 public:
-  AddTwoIntsAction( ros::NodeHandle& handle, const std::string& node_name, const NodeConfiguration & conf):
-  RosServiceNode<rc_decision::AddTwoInts>(handle, node_name, conf) {}
+  AddTwoIntsAction(ros::NodeHandle& handle, const std::string& node_name, const NodeConfiguration& conf)
+    : RosServiceNode<rc_decision::AddTwoInts>(handle, node_name, conf)
+  {
+  }
 
   static PortsList providedPorts()
   {
-    return  {
-      InputPort<int>("first_int"),
-      InputPort<int>("second_int"),
-      OutputPort<int>("sum") };
+    return { InputPort<int>("first_int"), InputPort<int>("second_int"), OutputPort<int>("sum") };
   }
 
   void sendRequest(RequestType& request) override
@@ -74,12 +77,13 @@ public:
   NodeStatus onResponse(const ResponseType& rep) override
   {
     ROS_INFO("AddTwoInts: response received");
-    if( rep.sum == expected_result_)
+    if (rep.sum == expected_result_)
     {
       setOutput<int>("sum", rep.sum);
       return NodeStatus::SUCCESS;
     }
-    else{
+    else
+    {
       ROS_ERROR("AddTwoInts replied something unexpected: %d", rep.sum);
       return NodeStatus::FAILURE;
     }
@@ -100,37 +104,36 @@ private:
 // http://wiki.ros.org/ROS/Tutorials/WritingServiceClient%28c%2B%2B%29
 //-------------------------------------------------------------
 
-class FibonacciServer: public RosActionNode<rc_decision::FibonacciAction>
+class FibonacciServer : public RosActionNode<rc_decision::FibonacciAction>
 {
-
 public:
-  FibonacciServer( ros::NodeHandle& handle, const std::string& name, const NodeConfiguration & conf):
-RosActionNode<rc_decision::FibonacciAction>(handle, name, conf) {}
+  FibonacciServer(ros::NodeHandle& handle, const std::string& name, const NodeConfiguration& conf)
+    : RosActionNode<rc_decision::FibonacciAction>(handle, name, conf)
+  {
+  }
 
   static PortsList providedPorts()
   {
-    return  {
-      InputPort<int>("order"),
-      OutputPort<int>("result") };
+    return { InputPort<int>("order"), OutputPort<int>("result") };
   }
 
   bool sendGoal(GoalType& goal) override
   {
-    if( !getInput<int>("order", goal.order) )
+    if (!getInput<int>("order", goal.order))
     {
       // abourt the entire action. Result in a FAILURE
       return false;
     }
-    expected_result_ = 0 + 1 + 1 + 2 + 3 + 5 + 8; // supposing order is 5
+    expected_result_ = 0 + 1 + 1 + 2 + 3 + 5 + 8;  // supposing order is 5
     ROS_INFO("FibonacciAction: sending request");
     return true;
   }
 
-  NodeStatus onResult( const ResultType& res) override
+  NodeStatus onResult(const ResultType& res) override
   {
     ROS_INFO("FibonacciAction: result received");
     int fibonacci_result = 0;
-    for( int n: res.sequence)
+    for (int n : res.sequence)
     {
       fibonacci_result += n;
     }
@@ -139,7 +142,8 @@ RosActionNode<rc_decision::FibonacciAction>(handle, name, conf) {}
       setOutput<int>("result", fibonacci_result);
       return NodeStatus::SUCCESS;
     }
-    else{
+    else
+    {
       ROS_ERROR("FibonacciAction replied something unexpected: %d", fibonacci_result);
       return NodeStatus::FAILURE;
     }
@@ -153,7 +157,7 @@ RosActionNode<rc_decision::FibonacciAction>(handle, name, conf) {}
 
   void halt() override
   {
-    if( status() == NodeStatus::RUNNING )
+    if (status() == NodeStatus::RUNNING)
     {
       ROS_WARN("FibonacciAction halted");
       BaseClass::halt();
@@ -166,8 +170,8 @@ private:
 
 //-----------------------------------------------------
 
-  // Simple tree, used to execute once each action.
-  static const char* xml_text = R"(
+// Simple tree, used to execute once each action.
+static const char* xml_text = R"(
  <root >
      <BehaviorTree>
         <Sequence>
@@ -188,7 +192,7 @@ private:
  </root>
  )";
 
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
   ros::init(argc, argv, "test_behavior_tree");
   ros::NodeHandle nh;
@@ -203,17 +207,16 @@ int main(int argc, char **argv)
 
   NodeStatus status = NodeStatus::IDLE;
 
-  #ifdef ZMQ_FOUND
-    // This logger publish status changes using ZeroMQ. Used by Groot
-    PublisherZMQ publisher_zmq(tree);
-  #endif
+#ifdef ZMQ_FOUND
+  // This logger publish status changes using ZeroMQ. Used by Groot
+  PublisherZMQ publisher_zmq(tree);
+#endif
 
-  while( ros::ok() && (status == NodeStatus::IDLE || status == NodeStatus::RUNNING))
+  while (ros::ok() && (status == NodeStatus::IDLE || status == NodeStatus::RUNNING))
   {
     ros::spinOnce();
     status = tree.tickRoot();
     std::cout << status << std::endl;
-    
     ros::Duration sleep_time(0.01);
     sleep_time.sleep();
   }
