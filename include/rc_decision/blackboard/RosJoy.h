@@ -37,7 +37,7 @@ public:
       setOutput("Joy_RY", joy_ry_);
       ROS_INFO("Joy_LX: %f, Joy_LY: %f, Joy_RY: %f", joy_lx_, joy_ly_, joy_ry_);
       return BT::NodeStatus::SUCCESS;
-    } 
+    }
     else
     {
       return BT::NodeStatus::FAILURE;
