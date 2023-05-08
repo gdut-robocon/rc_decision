@@ -18,13 +18,11 @@ int main(int argc, char** argv)
   std::string xml_filename;
   // we use factory to register our custom nodes
   BT::BehaviorTreeFactory factory;
- 
   factory.registerNodeType<rc_decision::MoveBase>("MoveBase");
   factory.registerNodeType<rc_decision::laser_goal>("laser_goal");
   factory.registerNodeType<rc_decision::BlackboardRead>("BlackboardRead");
   factory.registerNodeType<rc_decision::RosJoy>("RosJoy");
   factory.registerNodeType<rc_decision::ChassisMove>("ChassisMove");
- 
   std::string file_path = nh.param("file_path", std::string(" "));
   auto tree = factory.createTreeFromFile(file_path);
   ROS_INFO("Loading XML :%s", file_path.c_str());
@@ -46,6 +44,5 @@ int main(int argc, char** argv)
     loop_rate.sleep();
     ros::spinOnce();
   }
-
-  return 0;    
+  return 0;  
 }
