@@ -1,4 +1,4 @@
-uint16      uid       
-NodeStatus  prev_status 
+uint16      uid
+NodeStatus  prev_status
 NodeStatus  status
 time        timestamp

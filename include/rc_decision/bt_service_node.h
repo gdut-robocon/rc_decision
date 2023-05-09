@@ -23,23 +23,22 @@
 
 namespace BT
 {
-
 /**
  * Base Action to implement a ROS Service
  */
-template<class ServiceT>
+template <class ServiceT>
 class RosServiceNode : public BT::SyncActionNode
 {
 protected:
-
-  RosServiceNode(ros::NodeHandle& nh, const std::string& name, const BT::NodeConfiguration & conf):
-   BT::SyncActionNode(name, conf), node_(nh) { }
+  RosServiceNode(ros::NodeHandle& nh, const std::string& name, const BT::NodeConfiguration& conf)
+    : BT::SyncActionNode(name, conf), node_(nh)
+  {
+  }
 
 public:
-
-  using BaseClass    = RosServiceNode<ServiceT>;
-  using ServiceType  = ServiceT;
-  using RequestType  = typename ServiceT::Request;
+  using BaseClass = RosServiceNode<ServiceT>;
+  using ServiceType = ServiceT;
+  using RequestType = typename ServiceT::Request;
   using ResponseType = typename ServiceT::Response;
 
   RosServiceNode() = delete;
@@ -50,10 +49,8 @@ public:
   /// registered using RegisterRosAction<DeriveClass>()
   static PortsList providedPorts()
   {
-    return  {
-      InputPort<std::string>("service_name", "name of the ROS service"),
-      InputPort<unsigned>("timeout", 100, "timeout to connect to server (milliseconds)")
-      };
+    return { InputPort<std::string>("service_name", "name of the ROS service"),
+             InputPort<unsigned>("timeout", 100, "timeout to connect to server (milliseconds)") };
   }
 
   /// User must implement this method.
@@ -61,9 +58,10 @@ public:
 
   /// Method (to be implemented by the user) to receive the reply.
   /// User can decide which NodeStatus it will return (SUCCESS or FAILURE).
-  virtual NodeStatus onResponse( const ResponseType& rep) = 0;
+  virtual NodeStatus onResponse(const ResponseType& rep) = 0;
 
-  enum FailureCause{
+  enum FailureCause
+  {
     MISSING_SERVER = 0,
     FAILED_CALL = 1
   };
@@ -75,7 +73,6 @@ public:
   }
 
 protected:
-
   ros::ServiceClient service_client_;
 
   typename ServiceT::Response reply_;
@@ -85,9 +82,10 @@ protected:
 
   BT::NodeStatus tick() override
   {
-    if( !service_client_.isValid() ){
+    if (!service_client_.isValid())
+    {
       std::string server = getInput<std::string>("service_name").value();
-      service_client_ = node_.serviceClient<ServiceT>( server );
+      service_client_ = node_.serviceClient<ServiceT>(server);
     }
 
     unsigned msec;
@@ -95,14 +93,15 @@ protected:
     ros::Duration timeout(static_cast<double>(msec) * 1e-3);
 
     bool connected = service_client_.waitForExistence(timeout);
-    if( !connected ){
+    if (!connected)
+    {
       return onFailedRequest(MISSING_SERVER);
     }
 
     typename ServiceT::Request request;
     sendRequest(request);
-    bool received = service_client_.call( request, reply_ );
-    if( !received )
+    bool received = service_client_.call(request, reply_);
+    if (!received)
     {
       return onFailedRequest(FAILED_CALL);
     }
@@ -110,28 +109,25 @@ protected:
   }
 };
 
-
 /// Method to register the service into a factory.
 /// It gives you the opportunity to set the ros::NodeHandle.
-template <class DerivedT> static
-  void RegisterRosService(BT::BehaviorTreeFactory& factory,
-                     const std::string& registration_ID,
-                     ros::NodeHandle& node_handle)
+template <class DerivedT>
+static void RegisterRosService(BT::BehaviorTreeFactory& factory, const std::string& registration_ID,
+                               ros::NodeHandle& node_handle)
 {
   NodeBuilder builder = [&node_handle](const std::string& name, const NodeConfiguration& config) {
-    return std::make_unique<DerivedT>(node_handle, name, config );
+    return std::make_unique<DerivedT>(node_handle, name, config);
   };
 
   TreeNodeManifest manifest;
   manifest.type = getType<DerivedT>();
   manifest.ports = DerivedT::providedPorts();
   manifest.registration_ID = registration_ID;
-  const auto& basic_ports = RosServiceNode< typename DerivedT::ServiceType>::providedPorts();
-  manifest.ports.insert( basic_ports.begin(), basic_ports.end() );
+  const auto& basic_ports = RosServiceNode<typename DerivedT::ServiceType>::providedPorts();
+  manifest.ports.insert(basic_ports.begin(), basic_ports.end());
 
-  factory.registerBuilder( manifest, builder );
+  factory.registerBuilder(manifest, builder);
 }
-
 
 }  // namespace BT
 
