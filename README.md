@@ -33,3 +33,7 @@ Here you can use a remote computer to easily see the situation of robot
 Such as:Smart Phone,Switch
 
 ref:https://medium.com/teamarimac/groot-with-ros-a8f7855f8e35
+
+### libsodium:
+ref:https://gitee.com/mirrors/libsodium
+ref:https://zhuanlan.zhihu.com/p/398730348
