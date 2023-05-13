@@ -27,3 +27,9 @@ it can help us easily orangnize the task through graphical programming.
 please close conda when you set up Groot.
 
 if you do not download other package used in src file , you should test your environment by using test file.
+
+## Visual interface
+Here you can use a remote computer to easily see the situation of robot
+Such as:Smart Phone,Switch
+
+ref:https://medium.com/teamarimac/groot-with-ros-a8f7855f8e35
