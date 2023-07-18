@@ -22,6 +22,7 @@ public:
   BT::NodeStatus onRunning() override;
 
   void onHalted() override;
+
 private:
   ros::Publisher cmd_vel_pub_;
   geometry_msgs::Twist cmd_vel_;
